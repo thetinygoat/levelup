@@ -1,0 +1,164 @@
+import java.util.LinkedList;
+import java.util.ArrayList;
+
+public class BTree {
+  public static void main(String[] args) {
+    int[] arr = { 10, 20, 30, -1, -1, 40, -1, -1, 50, 60, 80, -1, -1, -1, 70, 90, -1, 100, -1, -1, -1 };
+    Node root = create(arr);
+    // display(root);
+    solve(root);
+  }
+
+  // solve function to call from main
+  public static void solve(Node root) {
+    // preorder(root);
+    // postorder(root);
+    // inorder(root);
+    // levelorder(root);
+    kfar_01(root, 2, 50);
+  }
+
+  // Node class for tree implementation
+  public static class Node {
+    int data = 0;
+    Node left = null;
+    Node right = null;
+
+    Node(int data, Node left, Node right) {
+      this.data = data;
+      this.left = left;
+      this.right = right;
+    }
+  }
+
+  static int idx = 0;
+
+  public static Node create(int[] arr) {
+    if (idx == arr.length || arr[idx] == -1) {
+      idx++;
+      return null;
+    }
+    Node nnode = new Node(arr[idx], null, null);
+    idx++;
+    nnode.left = create(arr);
+    nnode.right = create(arr);
+    return nnode;
+  }
+
+  public static void display(Node node) {
+    if (node == null)
+      return;
+    String str = "";
+
+    str += node.left == null ? "." : node.left.data;
+    str += " -> " + node.data + " <- ";
+    str += node.right == null ? "." : node.right.data;
+    System.out.println(str);
+
+    display(node.left);
+    display(node.right);
+  }
+
+  // pre order traversal
+  public static void preorder(Node root) {
+    if (root == null) {
+      return;
+    }
+    System.out.println(root.data);
+    preorder(root.left);
+    preorder(root.right);
+  }
+
+  // post order traversal
+  public static void postorder(Node root) {
+    if (root == null) {
+      return;
+    }
+
+    preorder(root.left);
+    preorder(root.right);
+    System.out.println(root.data);
+  }
+
+  // inorder traversal
+  public static void inorder(Node root) {
+    if (root == null) {
+      return;
+    }
+
+    preorder(root.left);
+    System.out.println(root.data);
+    preorder(root.right);
+
+  }
+
+  // level order traversal
+  public static void levelorder(Node root) {
+    LinkedList<Node> que = new LinkedList<>();
+    int level = 0;
+    que.addLast(root);
+    que.addLast(null);
+    System.out.print("Level: " + level + " -> ");
+    while (que.size() != 1) {
+      Node rnode = que.removeFirst();
+      System.out.println(rnode.data + " ");
+      if (rnode.left != null)
+        que.addLast(rnode.left);
+      if (rnode.right != null)
+        que.addLast(rnode.right);
+      if (que.getFirst() == null) {
+        que.addLast(null);
+        que.removeFirst();
+        level++;
+        System.out.println();
+        System.out.print("Level: " + level + " -> ");
+      }
+
+    }
+  }
+
+  public static ArrayList<Node> rootToNodePath(Node root, int data) {
+    if (root == null)
+      return null;
+    if (root.data == data) {
+      ArrayList<Node> base = new ArrayList<>();
+      base.add(root);
+      return base;
+    }
+    ArrayList<Node> left = rootToNodePath(root.left, data);
+    if (left != null) {
+      left.add(root);
+      return left;
+    }
+    ArrayList<Node> right = rootToNodePath(root.right, data);
+    if (right != null) {
+      right.add(root);
+      return right;
+    }
+
+    return null;
+  }
+
+  public static void kaway(Node node, int k, Node rnode) {
+    if (node == null)
+      return;
+    if (node == rnode)
+      return;
+    if (k == 0) {
+      System.out.println(node.data + " ");
+      return;
+    }
+    kaway(node.left, k - 1, rnode);
+    kaway(node.right, k - 1, rnode);
+  }
+
+  public static void kfar_01(Node root, int k, int data) {
+    ArrayList<Node> path = rootToNodePath(root, data);
+    Node rnode = null;
+    for (int i = 0; i < path.size(); i++) {
+      kaway(path.get(i), k - i, rnode);
+      rnode = path.get(i);
+    }
+  }
+
+}
