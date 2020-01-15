@@ -15,7 +15,9 @@ public class BTree {
     // postorder(root);
     // inorder(root);
     // levelorder(root);
-    kfar_01(root, 2, 50);
+    // kfar_01(root, 2, 50);
+    linear(root);
+    display(root);
   }
 
   // Node class for tree implementation
@@ -159,6 +161,63 @@ public class BTree {
       kaway(path.get(i), k - i, rnode);
       rnode = path.get(i);
     }
+  }
+
+  public static class BSTPair {
+    boolean isbst = true;
+    int count = 0;
+    int size = 0;
+    Node rootNode = null;
+
+    int max = (int) -1e8;
+    int min = (int) 1e8;
+  }
+
+  public static BSTPair bstsol(Node root) {
+    BSTPair mypair = new BSTPair();
+    if (root == null)
+      return mypair;
+    BSTPair lp = bstsol(root.left);
+    BSTPair rp = bstsol(root.right);
+    mypair.count = lp.count + rp.count;
+    if (lp.isbst && rp.isbst && lp.max < root.data && rp.min > root.data) {
+      mypair.count++;
+      mypair.rootNode = root;
+      mypair.size = mypair.count;
+    } else {
+      mypair.isbst = false;
+      if (lp.size > rp.size) {
+        mypair.size = lp.size;
+        mypair.rootNode = lp.rootNode;
+      } else {
+        mypair.size = rp.size;
+        mypair.rootNode = rp.rootNode;
+      }
+    }
+
+    mypair.min = Math.min(Math.min(lp.min, rp.min), root.data);
+    mypair.max = Math.max(Math.max(lp.max, rp.max), root.data);
+    return mypair;
+  }
+
+  public static Node linear(Node root) {
+    if (root == null)
+      return null;
+    if (root.left == null && root.right == null)
+      return root;
+
+    Node lefttail = linear(root.left);
+    Node righttail = linear(root.right);
+
+    if (lefttail == null)
+      root.left = root.right;
+    else
+      lefttail.left = root.right;
+
+    root.right = null;
+
+    return righttail != null ? righttail : lefttail;
+
   }
 
 }
