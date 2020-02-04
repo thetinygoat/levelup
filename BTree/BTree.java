@@ -1,5 +1,5 @@
 import java.util.LinkedList;
-
+import java.util.HashMap;
 import java.util.ArrayList;
 
 public class BTree {
@@ -23,12 +23,22 @@ public class BTree {
 
 		root = arrayToBst(sortedArr, 0, sortedArr.length - 1);
 
-		root = addDataToBST(root, 32);
-		root = addDataToBST(root, 29);
-		display(root);
-		System.out.println("\n");
-		root = deleteDataFromBST(root, 29);
-		display(root);
+		// root = addDataToBST(root, 32);
+		// root = addDataToBST(root, 29);
+		// display(root);
+		// System.out.println(bstLca(root, 29, 32).data);
+		// findInRange(root, 5, 20);
+		// verticalOrder(root, 0);
+		// System.out.println(hmap);
+		int leftwidth = width(root, true);
+		// int rightwidth = width(root, false);
+		int arr[];
+		arr = new int[leftwidth + 1];
+		// vericalOrderSum(root, arr, leftwidth);
+		diagonalSum(root, arr, leftwidth);
+		for (int i = 0; i < arr.length; i++) {
+			System.out.println(arr[i]);
+		}
 	}
 
 	// Node class for tree implementation
@@ -311,6 +321,94 @@ public class BTree {
 	public static void swapped_array() {
 		int arr[] = { 1, 3, 0, 0, 2 };
 		System.out.println();
+	}
+
+	public static boolean findInBst(Node root, int data) {
+		if (root == null)
+			return false;
+		if (root.data == data)
+			return true;
+		boolean left = findInBst(root.left, data);
+		boolean right = findInBst(root.right, data);
+		return left || right;
+	}
+
+	public static Node bstLca(Node root, int a, int b) {
+		if (root == null)
+			return null;
+		if (root.data < a)
+			return bstLca(root.right, a, b);
+		if (root.data > b)
+			return bstLca(root.left, a, b);
+		else {
+			if (findInBst(root, a) && findInBst(root, b)) {
+				return root;
+			}
+			return null;
+		}
+	}
+
+	public static Node findInRange(Node root, int a, int b) {
+		if (root == null)
+			return null;
+		if (root.data < a)
+			return bstLca(root.right, a, b);
+		if (root.data > b)
+			return bstLca(root.left, a, b);
+		else {
+			System.out.println(root.data);
+			if (root.data < a)
+				return bstLca(root.right, a, b);
+			if (root.data > b)
+				return bstLca(root.left, a, b);
+			// if (findInBst(root, a) && findInBst(root, b)) {
+			// return root;
+			// }
+			return null;
+		}
+	}
+
+	static HashMap<Integer, ArrayList<Integer>> hmap = new HashMap<>();
+
+	public static void verticalOrder(Node root, int order) {
+		if (root == null)
+			return;
+
+		verticalOrder(root.left, order - 1);
+		verticalOrder(root.right, order + 1);
+		if (!hmap.containsKey(order)) {
+			ArrayList<Integer> list = new ArrayList<>();
+			list.add(root.data);
+			hmap.put(order, list);
+		} else {
+			ArrayList<Integer> list = hmap.get(order);
+			list.add(root.data);
+			hmap.put(order, list);
+		}
+	}
+
+	public static int width(Node node, boolean isLeftWidth) {
+		if (node == null)
+			return -1;
+		int left = width(node.left, isLeftWidth) + (isLeftWidth ? 1 : -1);
+		int right = width(node.right, isLeftWidth) + (isLeftWidth ? -1 : 1);
+		return Math.max(left, right);
+	}
+
+	public static void vericalOrderSum(Node node, int[] arr, int idx) {
+		if (node == null)
+			return;
+		vericalOrderSum(node.left, arr, idx - 1);
+		arr[idx] += node.data;
+		vericalOrderSum(node.right, arr, idx + 1);
+	}
+
+	public static void diagonalSum(Node node, int[] arr, int idx) {
+		if (node == null)
+			return;
+		diagonalSum(node.left, arr, idx - 1);
+		arr[idx] += node.data;
+		diagonalSum(node.right, arr, idx);
 	}
 
 }
