@@ -92,20 +92,19 @@ void kahnsAlgo(){
 }
 
 // with cycle detection
-bool topologicalDFS(int src, vector<bool> &vis, vector<bool> &cycle, vector<int> st){
+bool topologicalDFS(int src, vector<bool> &vis, vector<bool> &cycle, vector<int> &st){
 	vis[src] = cycle[src] = true;
 	bool res = false;
 	for(int e : graph[src]){
 		if(!vis[e] && !res){
 			res = res || topologicalDFS(e,vis,cycle,st);
-		}else if(cycle[src]){
+		}else if(cycle[e]){
 			cout << "cycle\n";
 			return true;
 		}
 	}
-
-	cycle[src] = false;
 	st.push_back(src);
+	cycle[src] = false;
 	return res;
 }
 
@@ -113,13 +112,12 @@ void topologicalDFSMain(){
 	vector<bool> vis(n,false);
 	vector<bool> cycle(n,false);
 	vector<int> st;
-
-	for(int i = 0; i < n ; i++){
+	bool res = false;
+	for(int i = 0; i < n && !res; i++){
 		if(!vis[i]){
-			topologicalDFS(i,vis,cycle,st);
+			res = res || topologicalDFS(i,vis,cycle,st);
 		}
 	}
-
 	while(st.size() > 0){
 		cout << st.back();
 		st.pop_back();

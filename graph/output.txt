@@ -2,11 +2,12 @@
 1->2 
 2->3 
 3->4 
-4->5 6 
+4->3 5 6 
 5->6 
 6->
 
 0123456
-0123456
+cycle detected, topological sort not possible
+
 cycle
-cycle
+0123
