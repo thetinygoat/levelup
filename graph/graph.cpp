@@ -2,6 +2,7 @@
 #include <vector>
 #include <string>
 #include <stack>
+#include<pair>
 
 using namespace std;
 
@@ -101,6 +102,35 @@ int hamiltonianCycle(int src, int dest, vector<bool> &vis, string ans, int pos, 
     }
     vis[src] = false;
     return count;
+}
+
+void bipartite(int src, vector<int> &vis){
+    queue<pair<int,int>> q;
+    q.push({src,0});
+    while(q.size() != 0){
+        pair<int,int> p = q.front();
+        q.pop();
+        int e = p.first();
+        int c = p.second();
+        vis[e] = c;
+        if(vis[e] != -1){
+            if(vis[e] != c){
+                return false;
+            }else{
+                continue;
+            }
+        } 
+        for(Edge *el: graph[e]){
+            if(vis[el->v] == -1){
+                q.push({el->v, (c+1)%2});
+            }
+        }
+    }
+    return true;
+}
+
+void bipartitesol(){
+    for(int)
 }
 
 void topologicalsort(vector<bool> &vis, stack<int> &st, int src)

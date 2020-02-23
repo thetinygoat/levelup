@@ -96,7 +96,7 @@ bool topologicalDFS(int src, vector<bool> &vis, vector<bool> &cycle, vector<int>
 	vis[src] = cycle[src] = true;
 	bool res = false;
 	for(int e : graph[src]){
-		if(!vis[e] && !res){
+		if(!vis[e]){
 			res = res || topologicalDFS(e,vis,cycle,st);
 		}else if(cycle[e]){
 			cout << "cycle\n";
@@ -124,6 +124,11 @@ void topologicalDFSMain(){
 	}
 }
 
+
+
+void bipartite(){
+
+}
 
 void solve(){
 	createGraph();
